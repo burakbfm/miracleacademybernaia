@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Chat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="logo.png" alt="Logo" class="logo">
+            <h1>Generative AI Chat</h1>
+        </div>
+        <div class="chat-box" id="chatBox"></div>
+        <form id="chatForm" class="chat-form">
+            <input type="text" id="userInput" name="userInput" placeholder="Enter your message..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const userInput = document.getElementById('userInput').value;
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<div class="chat-message user-message">${userInput}</div>`;
+            document.getElementById('userInput').value = '';
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userInput })
+            });
+
+            const data = await response.json();
+            chatBox.innerHTML += `<div class="chat-message ai-message">${data.response}</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    </script>
+</body>
+
+</html>
